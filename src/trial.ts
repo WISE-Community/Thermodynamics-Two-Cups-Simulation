@@ -1,8 +1,10 @@
-
 /**
  * The class that accumulates the temperature data points.
  */
 export class Trial {
+  id;
+  trial;
+
   // the name of the trial
   name: string;
 
@@ -53,7 +55,7 @@ export class Trial {
       name: name,
       color: color,
       marker: { symbol: marker },
-      data: []
+      data: [],
     };
   }
 

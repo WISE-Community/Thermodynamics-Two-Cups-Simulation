@@ -1,12 +1,8 @@
-
 /**
  * The class that sends data to WISE.
  */
 export class WISEAPI {
-
-  constructor() {
-
-  }
+  constructor() {}
 
   /**
    * Save the trial data to WISE.
@@ -22,11 +18,11 @@ export class WISEAPI {
    */
   createComponentState(trial) {
     let trials = [trial];
-    let componentState = {};
+    let componentState: any = {};
     componentState.isAutoSave = false;
     componentState.isSubmit = false;
     componentState.studentData = {
-      'trials': trials
+      trials: trials,
     };
     return componentState;
   }

@@ -1,17 +1,58 @@
 import { DataPointHandler } from './dataPointHandler';
 import * as $ from 'jquery';
 import * as SVG from 'svg.js';
+import { CupCounterModel } from './cupCounterModel';
 
 /**
  * The class that moves and animates images.
  */
 export class AnimationHandler {
+  cupMovementAnimation;
+  heatAnimations;
+  draw;
+  cupHandle;
+  cupWarm;
+  cupHot;
+  cupTemperatureDisplay;
+  cupMaskRectStartingX;
+  cupMaskRectStartingY;
+  cupMaskRect;
+  cupMask;
+  cupGroup;
+  cupGroupStartingX;
+  cupGroupStartingY;
+  counterWarm;
+  counterCold;
+  counterTemperatureDisplay;
+  counterMaskRectStartingX;
+  counterMaskRectStartingY;
+  counterMaskRect;
+  cupThermometerText;
+  cupThermometerRedBar;
+  cupThermometer;
+  cupThermometerMaskRectStartingX;
+  cupThermometerMaskRectStartingY;
+  cupThermometerMaskRect;
+  cupThermometerMask;
+  counterThermometerText;
+  counterThermometerRedBar;
+  counterThermometer;
+  counterThermometerMaskRectStartingX;
+  counterThermometerMaskRectStartingY;
+  counterThermometerMaskRect;
+  counterThermometerMask;
+  temperatureLabels;
+  doneText;
+  cupHeatAnimation;
+  counterHeatAnimation;
+  cupThermometerAnimation;
+  counterThermometerAnimation;
 
   // the model which we need a reference to in order to pause, resume, and stop it
-  cupCounterModel: object;
+  cupCounterModel: CupCounterModel;
 
   // handles the temperature data points that are displayed and sent to WISE
-  dataPointHandler: object;
+  dataPointHandler: DataPointHandler;
 
   // keeps track of the time in integer seconds
   time: number;
@@ -20,7 +61,7 @@ export class AnimationHandler {
    * Constructor that sets up event listeners.
    * @param cupCounterModel The cup counter model.
    */
-  constructor(cupCounterModel: object) {
+  constructor(cupCounterModel: CupCounterModel) {
     this.time = 0;
     this.cupCounterModel = cupCounterModel;
     this.dataPointHandler = new DataPointHandler();
@@ -51,23 +92,28 @@ export class AnimationHandler {
     // create the text that displays the temperature on the cup
     let cupTemperatureDisplayX = cupX + 12;
     let cupTemperatureDisplayY = cupY + 10;
-    this.cupTemperatureDisplay = this.draw.text('60\u00B0C')
-        .move(cupTemperatureDisplayX, cupTemperatureDisplayY);
+    this.cupTemperatureDisplay = this.draw
+      .text('60\u00B0C')
+      .move(cupTemperatureDisplayX, cupTemperatureDisplayY);
     this.cupTemperatureDisplay.font(this.getFontObject(16));
 
     /*
      * Create the hot cup mask that we will use to slowly wipe away the hot cup
      * which will then reveal the warm cup.
      */
-    let cupMaskGradient = this.draw.gradient('linear', (stop) => {
-      stop.at(0, 'white')
-      stop.at(0.9, 'white')
-      stop.at(1, 'black')
-    }).rotate(90);
+    let cupMaskGradient = this.draw
+      .gradient('linear', (stop) => {
+        stop.at(0, 'white');
+        stop.at(0.9, 'white');
+        stop.at(1, 'black');
+      })
+      .rotate(90);
     this.cupMaskRectStartingX = cupX;
     this.cupMaskRectStartingY = cupY;
-    this.cupMaskRect = this.draw.rect(62, 44).fill(cupMaskGradient)
-        .move(this.cupMaskRectStartingX, this.cupMaskRectStartingY);
+    this.cupMaskRect = this.draw
+      .rect(62, 44)
+      .fill(cupMaskGradient)
+      .move(this.cupMaskRectStartingX, this.cupMaskRectStartingY);
     this.cupMask = this.draw.mask().add(this.cupMaskRect);
     this.cupHot.maskWith(this.cupMask);
 
@@ -91,31 +137,34 @@ export class AnimationHandler {
   createCounter() {
     let counterX = 42;
     let counterY = 120;
-    this.counterWarm = this.draw.image('./images/counterWarm.svg')
-        .move(counterX, 120);
-    this.counterCold = this.draw.image('./images/counterCold.svg')
-        .move(counterX, 120);
+    this.counterWarm = this.draw.image('./images/counterWarm.svg').move(counterX, 120);
+    this.counterCold = this.draw.image('./images/counterCold.svg').move(counterX, 120);
 
     // create the text that displays the temperature on the counter
     let counterTemperatureDisplayX = counterX + 20;
     let counterTemperatureDisplayY = counterY + 16;
-    this.counterTemperatureDisplay = this.draw.text('20\u00B0C')
-        .move(counterTemperatureDisplayX, counterTemperatureDisplayY);
+    this.counterTemperatureDisplay = this.draw
+      .text('20\u00B0C')
+      .move(counterTemperatureDisplayX, counterTemperatureDisplayY);
     this.counterTemperatureDisplay.font(this.getFontObject(16));
 
     /*
      * Create the cold counter mask that we will use to slowly wipe away the
      * cold counter which will then reveal the warm counter.
      */
-    let counterGradient = this.draw.gradient('linear', (stop) => {
-      stop.at(0, 'black')
-      stop.at(0.1, 'white')
-      stop.at(1, 'white')
-    }).rotate(90);
+    let counterGradient = this.draw
+      .gradient('linear', (stop) => {
+        stop.at(0, 'black');
+        stop.at(0.1, 'white');
+        stop.at(1, 'white');
+      })
+      .rotate(90);
     this.counterMaskRectStartingX = counterX;
     this.counterMaskRectStartingY = counterY - 6;
-    this.counterMaskRect = this.draw.rect(80, 80).fill(counterGradient)
-        .move(this.counterMaskRectStartingX, this.counterMaskRectStartingY);
+    this.counterMaskRect = this.draw
+      .rect(80, 80)
+      .fill(counterGradient)
+      .move(this.counterMaskRectStartingX, this.counterMaskRectStartingY);
     this.counterCold.maskWith(this.counterMaskRect);
   }
 
@@ -137,12 +186,14 @@ export class AnimationHandler {
     // the mercury
     let cupThermometerRedBarX = cupThermometerX + 8;
     let cupThermometerRedBarY = cupThermometerY + 3;
-    this.cupThermometerRedBar = this.draw.image('./images/thermometerRedBar.svg')
-        .move(cupThermometerRedBarX, cupThermometerRedBarY);
+    this.cupThermometerRedBar = this.draw
+      .image('./images/thermometerRedBar.svg')
+      .move(cupThermometerRedBarX, cupThermometerRedBarY);
 
     // the thermometer
-    this.cupThermometer = this.draw.image('./images/thermometer.svg')
-        .move(cupThermometerX, cupThermometerY);
+    this.cupThermometer = this.draw
+      .image('./images/thermometer.svg')
+      .move(cupThermometerX, cupThermometerY);
 
     /*
      * The mask for the mercury that we will use to change the height of the
@@ -150,8 +201,10 @@ export class AnimationHandler {
      */
     this.cupThermometerMaskRectStartingX = cupThermometerX + 7;
     this.cupThermometerMaskRectStartingY = cupThermometerY + 5;
-    this.cupThermometerMaskRect = this.draw.rect(9, 70).fill('white')
-        .move(this.cupThermometerMaskRectStartingX, this.cupThermometerMaskRectStartingY);
+    this.cupThermometerMaskRect = this.draw
+      .rect(9, 70)
+      .fill('white')
+      .move(this.cupThermometerMaskRectStartingX, this.cupThermometerMaskRectStartingY);
     this.cupThermometerMask = this.draw.mask().add(this.cupThermometerMaskRect);
     this.cupThermometerRedBar.maskWith(this.cupThermometerMask);
   }
@@ -174,12 +227,14 @@ export class AnimationHandler {
     // the mercury
     let counterThermometerRedBarX = counterThermometerX + 8;
     let counterThermometerRedBarY = counterThermometerY + 3;
-    this.counterThermometerRedBar = this.draw.image('./images/thermometerRedBar.svg')
-        .move(counterThermometerRedBarX, counterThermometerRedBarY);
+    this.counterThermometerRedBar = this.draw
+      .image('./images/thermometerRedBar.svg')
+      .move(counterThermometerRedBarX, counterThermometerRedBarY);
 
     // the thermometer
-    this.counterThermometer = this.draw.image('./images/thermometer.svg')
-        .move(counterThermometerX, counterThermometerY);
+    this.counterThermometer = this.draw
+      .image('./images/thermometer.svg')
+      .move(counterThermometerX, counterThermometerY);
 
     /*
      * The mask for the mercury that we will use to change the height of the
@@ -187,8 +242,10 @@ export class AnimationHandler {
      */
     this.counterThermometerMaskRectStartingX = counterThermometerX + 7;
     this.counterThermometerMaskRectStartingY = counterThermometerY + 68;
-    this.counterThermometerMaskRect = this.draw.rect(9, 70).fill('white')
-        .move(this.counterThermometerMaskRectStartingX, this.counterThermometerMaskRectStartingY);
+    this.counterThermometerMaskRect = this.draw
+      .rect(9, 70)
+      .fill('white')
+      .move(this.counterThermometerMaskRectStartingX, this.counterThermometerMaskRectStartingY);
     this.counterThermometerMask = this.draw.mask().add(this.counterThermometerMaskRect);
     this.counterThermometerRedBar.maskWith(this.counterThermometerMask);
   }
@@ -202,7 +259,8 @@ export class AnimationHandler {
    * - 20°C -
    */
   createThermometerTemperatureMarks() {
-    let text = ' - 60\u00B0C - \n - 50\u00B0C -  \n - 40\u00B0C -  \n - 30\u00B0C -  \n - 20\u00B0C - ';
+    let text =
+      ' - 60\u00B0C - \n - 50\u00B0C -  \n - 40\u00B0C -  \n - 30\u00B0C -  \n - 20\u00B0C - ';
     this.temperatureLabels = this.draw.text(text);
     this.temperatureLabels.move(162, 70);
     this.temperatureLabels.font(this.getFontObject(12));
@@ -237,9 +295,12 @@ export class AnimationHandler {
     // send the initial temperature data points to WISE
     this.updateTemperatures();
 
-    this.cupMovementAnimation = this.cupGroup.animate(1000).move(0, 12).after(() => {
-      this.startHeatTransfer();
-    });
+    this.cupMovementAnimation = this.cupGroup
+      .animate(1000)
+      .move(0, 12)
+      .after(() => {
+        this.startHeatTransfer();
+      });
   }
 
   /**
@@ -270,15 +331,17 @@ export class AnimationHandler {
     let animationDurationSeconds = 15;
     let animationDurationMilliseconds = animationDurationSeconds * 1000;
     this.cupHeatAnimation = this.cupMaskRect
-        .animate(animationDurationMilliseconds).move(this.cupMaskRectStartingX, 18);
+      .animate(animationDurationMilliseconds)
+      .move(this.cupMaskRectStartingX, 18);
     this.counterHeatAnimation = this.counterMaskRect
-        .animate(animationDurationMilliseconds).move(this.counterMaskRectStartingX, 170);
+      .animate(animationDurationMilliseconds)
+      .move(this.counterMaskRectStartingX, 170);
     this.cupThermometerAnimation = this.cupThermometerMaskRect
-        .animate(animationDurationMilliseconds,
-            this.generateCupThermometerEasingFunction()).move(147, 122);
+      .animate(animationDurationMilliseconds, this.generateCupThermometerEasingFunction())
+      .move(147, 122);
     this.counterThermometerAnimation = this.counterThermometerMaskRect
-        .animate(animationDurationMilliseconds,
-            this.generateCounterThermometerEasingFunction()).move(207, 122);
+      .animate(animationDurationMilliseconds, this.generateCounterThermometerEasingFunction())
+      .move(207, 122);
 
     /*
      * This array will be used to hold all the animations associated with the
@@ -307,7 +370,7 @@ export class AnimationHandler {
      * this.cupHeatAnimation.once(1)
      */
     for (let t = 0; t <= animationDurationSeconds; t++) {
-      this.cupHeatAnimation.once(t * (1/animationDurationSeconds), () => {
+      this.cupHeatAnimation.once(t * (1 / animationDurationSeconds), () => {
         this.incrementTimeCounter();
 
         /*
@@ -409,7 +472,6 @@ export class AnimationHandler {
    * Reset all the elements back to their original positions and states.
    */
   resetAnimations() {
-
     // set the time back to 0
     this.resetTimeCounter();
 
@@ -442,8 +504,7 @@ export class AnimationHandler {
    * is fully displayed.
    */
   resetCupHeatMask() {
-    this.cupMaskRect
-        .move(this.cupMaskRectStartingX, this.cupMaskRectStartingY);
+    this.cupMaskRect.move(this.cupMaskRectStartingX, this.cupMaskRectStartingY);
   }
 
   /**
@@ -451,8 +512,7 @@ export class AnimationHandler {
    * counter is fully displayed.
    */
   resetCounterHeatMask() {
-    this.counterMaskRect
-        .move(this.counterMaskRectStartingX, this.counterMaskRectStartingY);
+    this.counterMaskRect.move(this.counterMaskRectStartingX, this.counterMaskRectStartingY);
   }
 
   /**
@@ -460,8 +520,10 @@ export class AnimationHandler {
    * thermometer is at 60C.
    */
   resetCupThermometerMask() {
-    this.cupThermometerMaskRect
-        .move(this.cupThermometerMaskRectStartingX, this.cupThermometerMaskRectStartingY);
+    this.cupThermometerMaskRect.move(
+      this.cupThermometerMaskRectStartingX,
+      this.cupThermometerMaskRectStartingY
+    );
   }
 
   /**
@@ -469,8 +531,10 @@ export class AnimationHandler {
    * thermometer is at 20C.
    */
   resetCounterThermometerMask() {
-    this.counterThermometerMaskRect
-        .move(this.counterThermometerMaskRectStartingX, this.counterThermometerMaskRectStartingY);
+    this.counterThermometerMaskRect.move(
+      this.counterThermometerMaskRectStartingX,
+      this.counterThermometerMaskRectStartingY
+    );
   }
 
   /**

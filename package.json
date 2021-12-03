@@ -9,14 +9,15 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/jquery": "^3.5.9",
     "browserify": "^14.5.0",
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.2",
     "gulp-inject": "^4.3.0",
     "gulp-typescript": "^3.2.3",
     "gulp-util": "^3.0.8",
     "tsify": "^3.0.3",
-    "typescript": "^2.6.1",
-    "vinyl-source-stream": "^1.1.0",
+    "typescript": "^4.5.2",
+    "vinyl-source-stream": "^2.0.0",
     "watchify": "^3.9.0"
   },
   "dependencies": {

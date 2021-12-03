@@ -47,28 +47,27 @@ export function parseURLParameters() {
           let parameterPair = parameterPairString.split('=');
           if (parameterPair != null) {
             let [parameterName, parameterValue] = parameterPair;
-            if (parameterValue == "true") {
+            if (parameterValue == 'true') {
               /*
                * the value is the string "true" so we will convert
                * it from a string to a boolean value
                */
-              parameterValue = true;
-            } else if (parameterValue == "false") {
+              parameters[parameterName] = Boolean(parameterValue);
+            } else if (parameterValue == 'false') {
               /*
                * the value is the string "false" so we will convert
                * it from a string to a boolean value
                */
-              parameterValue = false;
-            } else if (!isNaN(parameterValue)) {
+              parameters[parameterName] = Boolean(parameterValue);
+            } else if (!isNaN(parseFloat(parameterValue))) {
               /*
                * the value is a number so we will convert it from
                * a string to a number
                */
-              parameterValue = parseFloat(parameterValue);
+              parameters[parameterName] = parseFloat(parameterValue);
+            } else {
+              parameters[parameterName] = parameterValue;
             }
-
-            // set the parameter into our parameters object
-            parameters[parameterName] = parameterValue;
           }
         }
       }

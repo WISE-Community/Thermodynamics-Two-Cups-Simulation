@@ -1,21 +1,21 @@
 import * as $ from 'jquery';
+import { CupCounterModel } from './cupCounterModel';
 
 /**
  * The button that handles playing, pausing, resuming, and restarting the model.
  */
 export class Button {
-
   /*
    * The model which we need a reference to in order to play, pause, resume, and
    * stop it.
    */
-  cupCounterModel: object;
+  cupCounterModel: CupCounterModel;
 
   /**
    * Constructor that sets up the button click event listener.
    * @param cupCounterModel The cup counter model.
    */
-  constructor(cupCounterModel: object) {
+  constructor(cupCounterModel: CupCounterModel) {
     this.cupCounterModel = cupCounterModel;
 
     $('#playPauseButton').on('click', () => {

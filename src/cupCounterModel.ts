@@ -1,13 +1,12 @@
 import { AnimationHandler } from './animationHandler';
 import { Button } from './button';
-import { parseURLParameters } from "./util";
+import { parseURLParameters } from './util';
 import * as $ from 'jquery';
 
 /**
  * The class that orchestrates the model interactions and animations.
  */
 export class CupCounterModel {
-
   // the url GET parameters, if any
   parameters: any;
 
@@ -18,10 +17,10 @@ export class CupCounterModel {
   state: string;
 
   // the object that handles animating elements
-  animationHandler: object;
+  animationHandler: AnimationHandler;
 
   // the button that performs play, pause, resume, restart
-  button: object;
+  button: Button;
 
   constructor() {
     // set the url parameters if there are any

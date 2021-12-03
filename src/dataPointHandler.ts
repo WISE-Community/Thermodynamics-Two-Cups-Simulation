@@ -5,7 +5,6 @@ import { WISEAPI } from './wiseAPI';
  * The class that handles the temperature data points and sends them to WISE.
  */
 export class DataPointHandler {
-
   // an array of temperature data points for the cup
   cupTemperatures: any[];
 
@@ -13,16 +12,50 @@ export class DataPointHandler {
   counterTemperatures: any[];
 
   // the trial object that we will send to WISE
-  trial: object;
+  trial: Trial;
 
   // the API we use to send data to WISE
-  wiseAPI: object;
+  wiseAPI: WISEAPI;
 
   constructor() {
     this.trial = new Trial();
     this.wiseAPI = new WISEAPI();
-    this.cupTemperatures = [[0,60],[1,53],[2,48],[3,44],[4,41],[5,39],[6,37],[7,35.5],[8,34],[9,32.8],[10,31.8],[11,31.2],[12,30.8],[13,30.5],[14,30.2],[15,30]];
-    this.counterTemperatures = [[0,20],[1,23],[2,25],[3,26.5],[4,27.3],[5,27.8],[6,28.2],[7,28.5],[8,28.8],[9,29.1],[10,29.3],[11,29.5],[12,29.7],[13,29.8],[14,29.9],[15,30]];
+    this.cupTemperatures = [
+      [0, 60],
+      [1, 53],
+      [2, 48],
+      [3, 44],
+      [4, 41],
+      [5, 39],
+      [6, 37],
+      [7, 35.5],
+      [8, 34],
+      [9, 32.8],
+      [10, 31.8],
+      [11, 31.2],
+      [12, 30.8],
+      [13, 30.5],
+      [14, 30.2],
+      [15, 30],
+    ];
+    this.counterTemperatures = [
+      [0, 20],
+      [1, 23],
+      [2, 25],
+      [3, 26.5],
+      [4, 27.3],
+      [5, 27.8],
+      [6, 28.2],
+      [7, 28.5],
+      [8, 28.8],
+      [9, 29.1],
+      [10, 29.3],
+      [11, 29.5],
+      [12, 29.7],
+      [13, 29.8],
+      [14, 29.9],
+      [15, 30],
+    ];
   }
 
   /**
@@ -97,8 +130,14 @@ export class DataPointHandler {
   addDataPointsToTrial(time) {
     let cupTemperatureDataPoint = this.getCupTemperatureDataPoint(time);
     let counterTemperatureDataPoint = this.getCounterTemperatureDataPoint(time);
-    this.trial.addDataPointToCupSeries(this.getDataPointX(cupTemperatureDataPoint), this.getDataPointY(cupTemperatureDataPoint));
-    this.trial.addDataPointToCounterSeries(this.getDataPointX(counterTemperatureDataPoint), this.getDataPointY(counterTemperatureDataPoint));
+    this.trial.addDataPointToCupSeries(
+      this.getDataPointX(cupTemperatureDataPoint),
+      this.getDataPointY(cupTemperatureDataPoint)
+    );
+    this.trial.addDataPointToCounterSeries(
+      this.getDataPointX(counterTemperatureDataPoint),
+      this.getDataPointY(counterTemperatureDataPoint)
+    );
   }
 
   /**
@@ -230,8 +269,8 @@ export class DataPointHandler {
       x1: x1,
       y1: y1,
       x2: x2,
-      y2: y2
-    }
+      y2: y2,
+    };
   }
 
   /**
@@ -265,8 +304,8 @@ export class DataPointHandler {
       x1: x1,
       y1: y1,
       x2: x2,
-      y2: y2
-    }
+      y2: y2,
+    };
   }
 
   /**
@@ -291,7 +330,7 @@ export class DataPointHandler {
    */
   getYIntercept(x1, y1, x2, y2) {
     let slope = this.getSlope(x1, y1, x2, y2);
-    return y1 - (slope * x1);
+    return y1 - slope * x1;
   }
 
   /**
@@ -302,6 +341,6 @@ export class DataPointHandler {
    * @return The calculated y value.
    */
   calculateY(m, x, b) {
-    return (m * x) + b;
+    return m * x + b;
   }
 }
