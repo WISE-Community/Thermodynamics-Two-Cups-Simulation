@@ -1,0 +1,26 @@
+{
+  "name": "thermodynamics-cup-counter-model",
+  "version": "1.0.0",
+  "description": "Thermodynamics Cup and Counter Model",
+  "main": "./dist/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "browserify": "^14.5.0",
+    "gulp": "^3.9.1",
+    "gulp-inject": "^4.3.0",
+    "gulp-typescript": "^3.2.3",
+    "gulp-util": "^3.0.8",
+    "tsify": "^3.0.3",
+    "typescript": "^2.6.1",
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.9.0"
+  },
+  "dependencies": {
+    "jquery": "^3.2.1",
+    "svg.js": "^2.6.3"
+  }
+}
