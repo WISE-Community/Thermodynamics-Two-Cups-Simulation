@@ -37,7 +37,7 @@ export class CupCounterModel {
    */
   play() {
     this.setState('playing');
-    this.animationHandler.startCupLowering();
+    this.animationHandler.startAnimation();
   }
 
   /**
@@ -79,7 +79,7 @@ export class CupCounterModel {
     // move all the images back to their original positions and states
     this.animationHandler.resetAnimations();
 
-    this.animationHandler.startCupLowering();
+    this.animationHandler.startAnimation();
   }
 
   /**
