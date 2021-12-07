@@ -88,14 +88,6 @@ export class Cup extends Item {
     this.cupGroupStartingY = this.cupGroup.y();
   }
 
-  resetCupPosition() {
-    this.cupGroup.move(this.cupGroupStartingX, this.cupGroupStartingY);
-  }
-
-  resetCupHeatMask() {
-    this.cupMaskRect.move(this.cupMaskRectStartingX, this.cupMaskRectStartingY);
-  }
-
   setCupTemperatureReadout(temp) {
     this.cupTemperatureDisplay.text(Math.floor(temp) + '\u00B0C');
   }
@@ -137,19 +129,19 @@ export class Cup extends Item {
   }
 
   pause() {
-    if (this.loweringAnimation != null) {
+    if (this.isPauseAllowed(this.loweringAnimation)) {
       this.loweringAnimation.pause();
     }
-    if (this.heatAnimation != null) {
+    if (this.isPauseAllowed(this.heatAnimation)) {
       this.heatAnimation.pause();
     }
   }
 
   resume() {
-    if (this.loweringAnimation != null && this.loweringAnimation.active) {
+    if (this.isResumeAllowed(this.loweringAnimation)) {
       this.loweringAnimation.play();
     }
-    if (this.heatAnimation != null && this.heatAnimation.active) {
+    if (this.isResumeAllowed(this.heatAnimation)) {
       this.heatAnimation.play();
     }
   }
@@ -161,5 +153,30 @@ export class Cup extends Item {
     if (this.heatAnimation != null) {
       this.heatAnimation.stop();
     }
+  }
+
+  reset() {
+    this.resetCupPosition();
+    this.resetCupHeatMask();
+  }
+
+  resetCupPosition() {
+    this.cupGroup.move(this.cupGroupStartingX, this.cupGroupStartingY);
+    if (this.loweringAnimation != null) {
+      // setting paused to false prevents a bug that occurs sometimes when play is clicked but
+      // the animation does not start playing
+      this.loweringAnimation.paused = false;
+    }
+    this.loweringAnimation = null;
+  }
+
+  resetCupHeatMask() {
+    this.cupMaskRect.move(this.cupMaskRectStartingX, this.cupMaskRectStartingY);
+    if (this.heatAnimation != null) {
+      // setting paused to false prevents a bug that occurs sometimes when play is clicked but
+      // the animation does not start playing
+      this.heatAnimation.paused = false;
+    }
+    this.heatAnimation = null;
   }
 }

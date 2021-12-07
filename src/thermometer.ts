@@ -71,21 +71,14 @@ export class Thermometer extends Item {
     };
   }
 
-  resetMask() {
-    this.cupThermometerMaskRect.move(
-      this.cupThermometerMaskRectStartingX,
-      this.cupThermometerMaskRectStartingY
-    );
-  }
-
   pause() {
-    if (this.animation != null) {
+    if (this.isPauseAllowed(this.animation)) {
       this.animation.pause();
     }
   }
 
   resume() {
-    if (this.animation != null && this.animation.active) {
+    if (this.isResumeAllowed(this.animation)) {
       this.animation.play();
     }
   }
@@ -94,5 +87,22 @@ export class Thermometer extends Item {
     if (this.animation != null) {
       this.animation.stop();
     }
+  }
+
+  reset() {
+    this.resetMask();
+    if (this.animation != null) {
+      // setting paused to false prevents a bug that occurs sometimes when play is clicked but
+      // the animation does not start playing
+      this.animation.paused = false;
+    }
+    this.animation = null;
+  }
+
+  resetMask() {
+    this.cupThermometerMaskRect.move(
+      this.cupThermometerMaskRectStartingX,
+      this.cupThermometerMaskRectStartingY
+    );
   }
 }

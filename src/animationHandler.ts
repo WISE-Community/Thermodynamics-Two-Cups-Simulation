@@ -247,10 +247,7 @@ export class AnimationHandler {
     // set the time back to 0
     this.resetTimeCounter();
 
-    // reset all the animations
-    this.resetCupPosition();
-    this.resetCupHeatMask();
-    this.resetCupThermometerMask();
+    this.resetItemAnimations();
     this.hideDoneMessage();
 
     /*
@@ -262,32 +259,9 @@ export class AnimationHandler {
     this.coldCup.setCupTemperatureReadout(this.dataPointHandler.getCounterTemperature(time));
   }
 
-  /**
-   * Set the cup back to its starting position.
-   */
-  resetCupPosition() {
-    this.cups.forEach((cup) => {
-      cup.resetCupPosition();
-    });
-  }
-
-  /**
-   * Set the cup heat mask back to its starting position so that the hot cup
-   * is fully displayed.
-   */
-  resetCupHeatMask() {
-    this.cups.forEach((cup) => {
-      cup.resetCupHeatMask();
-    });
-  }
-
-  /**
-   * Set the cup thermometer mask back to its starting position so that the
-   * thermometer is at 60C.
-   */
-  resetCupThermometerMask() {
-    this.cups.forEach((cup) => {
-      cup.thermometer.resetMask();
+  resetItemAnimations() {
+    this.items.forEach((item) => {
+      item.reset();
     });
   }
 
