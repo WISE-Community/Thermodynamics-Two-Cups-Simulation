@@ -3,6 +3,7 @@ import { AnimationHandler } from './animationHandler';
 import { DataPointHandler } from './dataPointHandler';
 import { Item } from './item';
 import { Thermometer } from './thermometer';
+import { Util } from './util';
 
 export class Cup extends Item {
   animationHandler: AnimationHandler;
@@ -20,11 +21,13 @@ export class Cup extends Item {
   dataPointHandler: DataPointHandler;
   draw: any;
   heatAnimation: any;
+  label: string;
   loweringAnimation: any;
   thermometer: Thermometer;
 
   constructor(
     draw: any,
+    label: string,
     x: number,
     y: number,
     startCupImage: string,
@@ -46,14 +49,16 @@ export class Cup extends Item {
     this.animationHandler = animationHandler;
     this.dataPointHandler = dataPointHandler;
     this.thermometer = thermometer;
+    this.label = label;
 
     // create the text that displays the temperature on the cup
-    let cupTemperatureDisplayX = cupX + 12;
+    let cupTemperatureDisplayX = cupX + 8;
     let cupTemperatureDisplayY = cupY + 10;
     this.cupTemperatureDisplay = this.draw
-      .text(`${startTemp}\u00B0C`)
+      .text(this.getCupTemperatureText(startTemp))
       .move(cupTemperatureDisplayX, cupTemperatureDisplayY);
     this.cupTemperatureDisplay.font(this.getFontObject(16));
+    this.cupTemperatureDisplay.style('white-space', 'pre');
 
     /*
      * Create the hot cup mask that we will use to slowly wipe away the hot cup
@@ -88,8 +93,12 @@ export class Cup extends Item {
     this.cupGroupStartingY = this.cupGroup.y();
   }
 
+  getCupTemperatureText(temp) {
+    return Util.getLeadingWhiteSpace(temp) + Math.floor(temp) + '\u00B0C';
+  }
+
   setCupTemperatureReadout(temp) {
-    this.cupTemperatureDisplay.text(Math.floor(temp) + '\u00B0C');
+    this.cupTemperatureDisplay.text(this.getCupTemperatureText(temp));
   }
 
   startAnimation(lowerCupTime: number, heatChangeTime: number, tickCallback: any): any {
@@ -116,7 +125,7 @@ export class Cup extends Item {
       });
     }
     cupMaskAnimation.after(() => {
-      this.animationHandler.setCompleted();
+      this.animationHandler.setCompleted(this.label);
     });
     return cupMaskAnimation;
   }

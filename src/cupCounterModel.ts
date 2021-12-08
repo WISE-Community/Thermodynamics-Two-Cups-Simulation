@@ -1,6 +1,6 @@
 import { AnimationHandler } from './animationHandler';
 import { Button } from './button';
-import { parseURLParameters } from './util';
+import { Util } from './util';
 import * as $ from 'jquery';
 
 /**
@@ -24,7 +24,7 @@ export class CupCounterModel {
 
   constructor() {
     // set the url parameters if there are any
-    this.parameters = parseURLParameters();
+    this.parameters = Util.parseURLParameters();
     this.setParameters(this.parameters);
     this.state = 'initialized';
     this.animationHandler = new AnimationHandler(this);

@@ -4,6 +4,7 @@ import { CupCounterModel } from './cupCounterModel';
 import { Cup } from './cup';
 import { Counter } from './counter';
 import { Thermometer } from './thermometer';
+import { Util } from './util';
 
 /**
  * The class that moves and animates images.
@@ -19,6 +20,7 @@ export class AnimationHandler {
   doneText: SVG.Text;
   hotCup: Cup;
   items: any[] = [];
+  cupToIsAnimationCompleted: any = {};
   temperatureLabels: SVG.Text;
   // keeps track of the time in integer seconds
   time: number;
@@ -57,6 +59,7 @@ export class AnimationHandler {
   createHotCup(thermometer: Thermometer) {
     return new Cup(
       this.draw,
+      'cold',
       50,
       120,
       './images/cupHot.svg',
@@ -71,6 +74,7 @@ export class AnimationHandler {
   createColdCup(thermometer: Thermometer) {
     return new Cup(
       this.draw,
+      'hot',
       260,
       120,
       './images/cupCold.svg',
@@ -110,19 +114,13 @@ export class AnimationHandler {
     let text = '';
     for (let c = 100; c >= 0; c -= 10) {
       text += ' -';
-      for (let space = 1; space <= 4 - this.getNumDigits(c); space++) {
-        text += ' ';
-      }
+      text += Util.getLeadingWhiteSpace(c);
       text += `${c}\u00B0C - \n`;
     }
     this.temperatureLabels = this.draw.text(text);
     this.temperatureLabels.style('white-space', 'pre');
     this.temperatureLabels.move(162, 70);
     this.temperatureLabels.font(this.getFontObject(12));
-  }
-
-  getNumDigits(number: number): number {
-    return (number + '').length;
   }
 
   /**
@@ -157,7 +155,7 @@ export class AnimationHandler {
       // animations.
       this.incrementTimeAndUpdateTemperatures();
     });
-    this.coldCup.startAnimation(1, 15, () => {});
+    this.coldCup.startAnimation(1, 10, () => {});
   }
 
   incrementTimeAndUpdateTemperatures() {
@@ -240,6 +238,7 @@ export class AnimationHandler {
 
     this.resetItemAnimations();
     this.hideDoneMessage();
+    this.resetCupToIsAnimationCompleted();
 
     /*
      * Set the cup and counter temperature displays back to their starting
@@ -254,6 +253,10 @@ export class AnimationHandler {
     this.items.forEach((item) => {
       item.reset();
     });
+  }
+
+  resetCupToIsAnimationCompleted() {
+    this.cupToIsAnimationCompleted = {};
   }
 
   /**
@@ -271,7 +274,10 @@ export class AnimationHandler {
     this.doneText.hide();
   }
 
-  setCompleted() {
-    this.cupCounterModel.setCompleted();
+  setCompleted(label: string): void {
+    this.cupToIsAnimationCompleted[label] = true;
+    if (this.cupToIsAnimationCompleted['cold'] && this.cupToIsAnimationCompleted['hot']) {
+      this.cupCounterModel.setCompleted();
+    }
   }
 }
