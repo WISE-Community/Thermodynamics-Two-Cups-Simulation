@@ -35,7 +35,7 @@ export class Thermometer extends Item {
 
     // the mercury
     const cupThermometerRedBarX = x + 8;
-    const cupThermometerRedBarY = y + 3;
+    const cupThermometerRedBarY = y + 6;
     this.cupThermometerRedBar = this.draw
       .image('./images/thermometerRedBar.svg')
       .move(cupThermometerRedBarX, cupThermometerRedBarY);
@@ -47,7 +47,7 @@ export class Thermometer extends Item {
     this.cupThermometerMaskRectStartingX = x + 7;
     this.cupThermometerMaskRectStartingY = y + thermometerY;
     this.cupThermometerMaskRect = this.draw
-      .rect(9, 70)
+      .rect(9, 172)
       .fill('white')
       .move(this.cupThermometerMaskRectStartingX, this.cupThermometerMaskRectStartingY);
     this.cupThermometerMask = this.draw.mask().add(this.cupThermometerMaskRect);
@@ -56,19 +56,9 @@ export class Thermometer extends Item {
 
   startAnimation(animationDurationSeconds: number) {
     this.animation = this.cupThermometerMaskRect
-      .animate(
-        this.convertSecondsToMilliseconds(animationDurationSeconds),
-        this.generateEasingFunction()
-      )
-      .move(this.cupThermometerMaskRectStartingX, 122);
+      .animate(this.convertSecondsToMilliseconds(animationDurationSeconds), '>')
+      .move(this.cupThermometerMaskRectStartingX, 200);
     return this.animation;
-  }
-
-  generateEasingFunction(): any {
-    const thisDataPointHandler = this.dataPointHandler;
-    return (pos) => {
-      return thisDataPointHandler.getScaledCounterPos(pos);
-    };
   }
 
   pause() {

@@ -5,11 +5,11 @@ import { WISEAPI } from './wiseAPI';
  * The class that handles the temperature data points and sends them to WISE.
  */
 export class DataPointHandler {
-  // an array of temperature data points for the cup
-  cupTemperatures: any[];
+  // an array of temperature data points for the hot cup
+  hotCupTemperatures: any[];
 
-  // an array of temperature data points for the counter
-  counterTemperatures: any[];
+  // an array of temperature data points for the cold cup
+  coldCupTemperatures: any[];
 
   // the trial object that we will send to WISE
   trial: Trial;
@@ -20,41 +20,41 @@ export class DataPointHandler {
   constructor() {
     this.trial = new Trial();
     this.wiseAPI = new WISEAPI();
-    this.cupTemperatures = [
-      [0, 60],
-      [1, 53],
-      [2, 48],
-      [3, 44],
-      [4, 41],
-      [5, 39],
-      [6, 37],
-      [7, 35.5],
-      [8, 34],
-      [9, 32.8],
-      [10, 31.8],
-      [11, 31.2],
-      [12, 30.8],
-      [13, 30.5],
-      [14, 30.2],
-      [15, 30],
+    this.hotCupTemperatures = [
+      [0, 100],
+      [1, 90],
+      [2, 82],
+      [3, 74],
+      [4, 68],
+      [5, 60],
+      [6, 53],
+      [7, 46],
+      [8, 40],
+      [9, 35],
+      [10, 31],
+      [11, 27],
+      [12, 24],
+      [13, 22],
+      [14, 21],
+      [15, 20],
     ];
-    this.counterTemperatures = [
-      [0, 20],
-      [1, 23],
-      [2, 25],
-      [3, 26.5],
-      [4, 27.3],
-      [5, 27.8],
-      [6, 28.2],
-      [7, 28.5],
-      [8, 28.8],
-      [9, 29.1],
-      [10, 29.3],
-      [11, 29.5],
-      [12, 29.7],
-      [13, 29.8],
-      [14, 29.9],
-      [15, 30],
+    this.coldCupTemperatures = [
+      [0, 5],
+      [1, 7],
+      [2, 9],
+      [3, 10],
+      [4, 11],
+      [5, 12],
+      [6, 13],
+      [7, 14],
+      [8, 16],
+      [9, 17],
+      [10, 18],
+      [11, 19],
+      [12, 19],
+      [13, 20],
+      [14, 20],
+      [15, 20],
     ];
   }
 
@@ -66,41 +66,41 @@ export class DataPointHandler {
   }
 
   /**
-   * Get the cup temperature at a specific time.
+   * Get the hot cup temperature at a specific time.
    * @param time The time we want the data point for. This will be an integer.
    * @return An array containing the time and temperature like
    * [time, temperature]
    */
-  getCupTemperatureDataPoint(time) {
-    return this.cupTemperatures[time];
+  getHotCupTemperatureDataPoint(time) {
+    return this.hotCupTemperatures[time];
   }
 
   /**
-   * Get the counter temperature at a specific time.
+   * Get the cold cup temperature at a specific time.
    * @param time The time we want the data point for. This will be an integer.
    * @return An array containing the time and temperature like
    * [time, temperature]
    */
-  getCounterTemperatureDataPoint(time) {
-    return this.counterTemperatures[time];
+  getColdCupTemperatureDataPoint(time) {
+    return this.coldCupTemperatures[time];
   }
 
   /**
-   * Get the temperature of the cup at a specific time.
+   * Get the temperature of the hot cup at a specific time.
    * @param time The time we want the temperature for. This will be an integer.
    * @return A float value representing the temperature in Celsius like 31.8
    */
-  getCupTemperature(time) {
-    return this.getDataPointY(this.cupTemperatures[time]);
+  getHotCupTemperature(time) {
+    return this.getDataPointY(this.hotCupTemperatures[time]);
   }
 
   /**
-   * Get the temperature of the counter at a specific time.
+   * Get the temperature of the cold cup at a specific time.
    * @param time The time we want the temperature for. This will be an integer.
    * @return A float value representing the temperature in Celsius like 29.3
    */
-  getCounterTemperature(time) {
-    return this.getDataPointY(this.counterTemperatures[time]);
+  getColdCupTemperature(time) {
+    return this.getDataPointY(this.coldCupTemperatures[time]);
   }
 
   /**
@@ -128,15 +128,15 @@ export class DataPointHandler {
    * @param time Add the data points at this specific time.
    */
   addDataPointsToTrial(time) {
-    let cupTemperatureDataPoint = this.getCupTemperatureDataPoint(time);
-    let counterTemperatureDataPoint = this.getCounterTemperatureDataPoint(time);
-    this.trial.addDataPointToCupSeries(
-      this.getDataPointX(cupTemperatureDataPoint),
-      this.getDataPointY(cupTemperatureDataPoint)
+    const hotCupTemperatureDataPoint = this.getHotCupTemperatureDataPoint(time);
+    const coldCupTemperatureDataPoint = this.getColdCupTemperatureDataPoint(time);
+    this.trial.addDataPointToHotCupSeries(
+      this.getDataPointX(hotCupTemperatureDataPoint),
+      this.getDataPointY(hotCupTemperatureDataPoint)
     );
-    this.trial.addDataPointToCounterSeries(
-      this.getDataPointX(counterTemperatureDataPoint),
-      this.getDataPointY(counterTemperatureDataPoint)
+    this.trial.addDataPointToColdCupSeries(
+      this.getDataPointX(coldCupTemperatureDataPoint),
+      this.getDataPointY(coldCupTemperatureDataPoint)
     );
   }
 
@@ -148,164 +148,6 @@ export class DataPointHandler {
     // update the trial to add the new temperature data points.
     this.addDataPointsToTrial(time);
     this.wiseAPI.save(this.trial.toJsonObject());
-  }
-
-  /**
-   * Scale the cup position so that it more accurately matches the cup
-   * temperature.
-   * @param pos A value between 0 and 1 inclusive. 0 represents the beginnning
-   * position (0 seconds, 60 Celsius). 1 represents the end position
-   * (15 seconds, 30 Celsius).
-   * @return A scaled position that reflects the curved temperature line instead
-   * of a straight line. This value will be between 0 and 1.
-   */
-  getScaledCupPos(pos) {
-    if (pos == 1) {
-      // the pos is at 1 (the end) so we don't need to perform any scaling
-      return 1;
-    } else {
-      // get the time position as a value between 0 and 15
-      let scaledX = pos * 15;
-
-      /*
-       * Get the point that comes before and the one that comes after at the
-       * integer boundaries.
-       * Example:
-       * if scaledX == 3.3
-       * then the point before will be at x = 3 and the point after will be at
-       * x = 4
-       */
-      let points = this.getBeforeAndAfterCupPoints(scaledX);
-      let x1 = points.x1;
-      let y1 = points.y1;
-      let x2 = points.x2;
-      let y2 = points.y2;
-
-      let slope = this.getSlope(x1, y1, x2, y2);
-      let b = this.getYIntercept(x1, y1, x2, y2);
-
-      // calculate the new temperature
-      let newY = this.calculateY(slope, scaledX, b);
-
-      // convert the new temperature back to a value between 0 and 1
-      let newPos = (60 - newY) / (60 - 30);
-
-      return newPos;
-    }
-  }
-
-  /**
-   * Scale the counter position so that it more accurately matches the counter
-   * temperature.
-   * @param pos A value between 0 and 1 inclusive. 0 represents the beginnning
-   * position (0 seconds, 20 Celsius). 1 represents the end position
-   * (15 seconds, 30 Celsius).
-   * @return A scaled position that reflects the curved temperature line instead
-   * of a straight line. This value will be between 0 and 1.
-   */
-  getScaledCounterPos(pos) {
-    if (pos == 1) {
-      // the pos is at 1 (the end) so we don't need to perform any scaling
-      return 1;
-    } else {
-      // get the time position as a value between 0 and 15
-      let scaledX = pos * 15;
-
-      /*
-       * Get the point that comes before and the one that comes after at the
-       * integer boundaries.
-       * Example:
-       * if scaledX == 3.3
-       * then the point before will be at x = 3 and the point after will be at
-       * x = 4
-       */
-      let points = this.getBeforeAndAfterCounterPoints(scaledX);
-      let x1 = points.x1;
-      let y1 = points.y1;
-      let x2 = points.x2;
-      let y2 = points.y2;
-
-      let slope = this.getSlope(x1, y1, x2, y2);
-      let b = this.getYIntercept(x1, y1, x2, y2);
-
-      // calculate the new temperature
-      let newY = this.calculateY(slope, scaledX, b);
-
-      // convert the new temperature back to a value between 0 and 1
-      let newPos = (newY - 20) / (30 - 20);
-
-      return newPos;
-    }
-  }
-
-  /**
-   * Get the cup temperature point that comes before and the point that comes
-   * after at the integer boundaries.
-   * Example:
-   * if x == 3.3
-   * then the point before will be at x = 3 and the point after will be at
-   * x = 4
-   * @param x Get the points that come before and after this x value.
-   * @return An object that contains the x and y values of the point that comes
-   * before our x and the x and y values of the point that comes after our x.
-   */
-  getBeforeAndAfterCupPoints(x) {
-    // get the x integer values that come before and after our x
-    let x1 = Math.floor(x);
-    let x2 = Math.ceil(x);
-    if (x1 == x2) {
-      /*
-       * If x is an exact integer, x1 and x2 will be the same so we need
-       * to increment x2 by 1.
-       */
-      x2 += 1;
-    }
-
-    // get the temperature values for x1 and x2
-    let y1 = this.cupTemperatures[x1][1];
-    let y2 = this.cupTemperatures[x2][1];
-
-    return {
-      x1: x1,
-      y1: y1,
-      x2: x2,
-      y2: y2,
-    };
-  }
-
-  /**
-   * Get the couner temperature point that comes before and the point that comes
-   * after at the integer boundaries.
-   * Example:
-   * if x == 3.3
-   * then the point before will be at x = 3 and the point after will be at
-   * x = 4
-   * @param x Get the points that come before and after this x value.
-   * @return An object that contains the x and y values of the point that comes
-   * before our x and the x and y values of the point that comes after our x.
-   */
-  getBeforeAndAfterCounterPoints(x) {
-    // get the x integer values that come before and after our x
-    let x1 = Math.floor(x);
-    let x2 = Math.ceil(x);
-    if (x1 == x2) {
-      /*
-       * If x is an exact integer, x1 and x2 will be the same so we need
-       * to increment x2 by 1.
-       */
-      x2 += 1;
-    }
-
-    // get the temperature values for x1 and x2
-    let y1 = this.counterTemperatures[x1][1];
-    let y2 = this.counterTemperatures[x2][1];
-
-    return {
-      x1: x1,
-      y1: y1,
-      x2: x2,
-      y2: y2,
-    };
   }
 
   /**

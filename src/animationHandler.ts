@@ -31,7 +31,7 @@ export class AnimationHandler {
     this.time = 0;
     this.cupCounterModel = cupCounterModel;
     this.dataPointHandler = new DataPointHandler();
-    this.draw = SVG('modelDiv').size(400, 200);
+    this.draw = SVG('modelDiv').size(400, 300);
     this.initializeItems();
     this.createThermometerTemperatureMarks();
     this.createDoneMessage();
@@ -58,10 +58,10 @@ export class AnimationHandler {
     return new Cup(
       this.draw,
       50,
-      70,
+      120,
       './images/cupHot.svg',
       './images/cupWarm.svg',
-      60,
+      100,
       this,
       this.dataPointHandler,
       thermometer
@@ -72,10 +72,10 @@ export class AnimationHandler {
     return new Cup(
       this.draw,
       260,
-      70,
+      120,
       './images/cupCold.svg',
       './images/cupWarm.svg',
-      20,
+      5,
       this,
       this.dataPointHandler,
       thermometer
@@ -83,11 +83,11 @@ export class AnimationHandler {
   }
 
   createLeftCounter() {
-    return new Counter(this.draw, 42, 120);
+    return new Counter(this.draw, 42, 170);
   }
 
   createRightCounter() {
-    return new Counter(this.draw, 252, 120);
+    return new Counter(this.draw, 252, 170);
   }
 
   createLeftThermometer() {
@@ -95,7 +95,7 @@ export class AnimationHandler {
   }
 
   createRightThermometer() {
-    return new Thermometer(this.draw, 200, 70, 'Right', 68, this.dataPointHandler);
+    return new Thermometer(this.draw, 208, 70, 'Right', 155, this.dataPointHandler);
   }
 
   /**
@@ -107,11 +107,22 @@ export class AnimationHandler {
    * - 20°C -
    */
   createThermometerTemperatureMarks() {
-    let text =
-      ' - 60\u00B0C - \n - 50\u00B0C -  \n - 40\u00B0C -  \n - 30\u00B0C -  \n - 20\u00B0C - ';
+    let text = '';
+    for (let c = 100; c >= 0; c -= 10) {
+      text += ' -';
+      for (let space = 1; space <= 4 - this.getNumDigits(c); space++) {
+        text += ' ';
+      }
+      text += `${c}\u00B0C - \n`;
+    }
     this.temperatureLabels = this.draw.text(text);
+    this.temperatureLabels.style('white-space', 'pre');
     this.temperatureLabels.move(162, 70);
     this.temperatureLabels.font(this.getFontObject(12));
+  }
+
+  getNumDigits(number: number): number {
+    return (number + '').length;
   }
 
   /**
@@ -149,26 +160,6 @@ export class AnimationHandler {
     this.coldCup.startAnimation(1, 15, () => {});
   }
 
-  /**
-   * Generate a function that scales the cup position.
-   */
-  generateCupThermometerEasingFunction() {
-    let thisDataPointHandler = this.dataPointHandler;
-    return (pos) => {
-      return thisDataPointHandler.getScaledCupPos(pos);
-    };
-  }
-
-  /**
-   * Generate a function that scales the counter position.
-   */
-  generateCounterThermometerEasingFunction() {
-    let thisDataPointHandler = this.dataPointHandler;
-    return (pos) => {
-      return thisDataPointHandler.getScaledCounterPos(pos);
-    };
-  }
-
   incrementTimeAndUpdateTemperatures() {
     this.incrementTimeCounter();
     this.updateTemperatures();
@@ -183,10 +174,10 @@ export class AnimationHandler {
 
     // update the temperatures displayed on the cup and counter
     const time = this.getTimeCounter();
-    const cupTemperature = this.dataPointHandler.getCupTemperature(time);
-    const counterTemperature = this.dataPointHandler.getCounterTemperature(time);
-    this.hotCup.setCupTemperatureReadout(cupTemperature);
-    this.coldCup.setCupTemperatureReadout(counterTemperature);
+    const hotCupTemperature = this.dataPointHandler.getHotCupTemperature(time);
+    const coldCupTemperature = this.dataPointHandler.getColdCupTemperature(time);
+    this.hotCup.setCupTemperatureReadout(hotCupTemperature);
+    this.coldCup.setCupTemperatureReadout(coldCupTemperature);
   }
 
   /**
@@ -255,8 +246,8 @@ export class AnimationHandler {
      * temperatures.
      */
     let time = this.getTimeCounter();
-    this.hotCup.setCupTemperatureReadout(this.dataPointHandler.getCupTemperature(time));
-    this.coldCup.setCupTemperatureReadout(this.dataPointHandler.getCounterTemperature(time));
+    this.hotCup.setCupTemperatureReadout(this.dataPointHandler.getHotCupTemperature(time));
+    this.coldCup.setCupTemperatureReadout(this.dataPointHandler.getColdCupTemperature(time));
   }
 
   resetItemAnimations() {

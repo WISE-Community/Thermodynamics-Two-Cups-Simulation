@@ -29,10 +29,10 @@ export class Trial {
      * be drawn again as the model runs.
      */
     this.trial.id = this.id;
-    this.trial.name = 'Cup and Counter Temperatures';
+    this.trial.name = 'Hot Cup and Cold Cup Temperatures';
     this.trial.series = [];
-    this.trial.series.push(this.createSeries('Cup', 'red', 'circle'));
-    this.trial.series.push(this.createSeries('Counter', 'black', 'circle'));
+    this.trial.series.push(this.createSeries('Hot Cup', 'red', 'circle'));
+    this.trial.series.push(this.createSeries('Cold Cup', 'black', 'circle'));
   }
 
   /**
@@ -70,36 +70,36 @@ export class Trial {
   }
 
   /**
-   * Add a data point to the cup series.
+   * Add a data point to the hot cup series.
    * @param x The x value of the data point. This will be the time.
    * @param y The y value of the data point. This will be the temperature.
    */
-  addDataPointToCupSeries(x, y) {
-    this.addDataPointToSeries(this.getCupSeries(), x, y);
+  addDataPointToHotCupSeries(x, y) {
+    this.addDataPointToSeries(this.getHotCupSeries(), x, y);
   }
 
   /**
-   * Add a data point to the counter series.
+   * Add a data point to the cold cup series.
    * @param x The x value of the data point. This will be the time.
    * @param y The y value of the data point. This will be the temperature.
    */
-  addDataPointToCounterSeries(x, y) {
-    this.addDataPointToSeries(this.getCounterSeries(), x, y);
+  addDataPointToColdCupSeries(x, y) {
+    this.addDataPointToSeries(this.getColdCupSeries(), x, y);
   }
 
   /**
    * Get the cup series from the trial.
    * @return The cup series object.
    */
-  getCupSeries() {
+  getHotCupSeries() {
     return this.trial.series[0];
   }
 
   /**
-   * Get the counter series from the trial.
-   * @return The counter series object.
+   * Get the cold cup series from the trial.
+   * @return The cold cup series object.
    */
-  getCounterSeries() {
+  getColdCupSeries() {
     return this.trial.series[1];
   }
 }

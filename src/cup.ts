@@ -121,13 +121,6 @@ export class Cup extends Item {
     return cupMaskAnimation;
   }
 
-  generateCupThermometerEasingFunction() {
-    const thisDataPointHandler = this.dataPointHandler;
-    return (pos) => {
-      return thisDataPointHandler.getScaledCupPos(pos);
-    };
-  }
-
   pause() {
     if (this.isPauseAllowed(this.loweringAnimation)) {
       this.loweringAnimation.pause();
