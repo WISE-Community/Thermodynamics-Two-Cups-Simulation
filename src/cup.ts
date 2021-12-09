@@ -94,7 +94,7 @@ export class Cup extends Item {
   }
 
   getCupTemperatureText(temp) {
-    return Util.getLeadingWhiteSpace(temp) + Math.floor(temp) + '\u00B0C';
+    return Util.getLeadingWhiteSpace(temp) + Math.round(temp) + '\u00B0C';
   }
 
   setCupTemperatureReadout(temp) {
@@ -119,11 +119,19 @@ export class Cup extends Item {
       .animate(this.convertSecondsToMilliseconds(animationDurationSeconds))
       .attr({ opacity: 0 });
     this.thermometer.startAnimation(animationDurationSeconds);
-    for (let t = 0; t <= animationDurationSeconds; t++) {
-      cupMaskAnimation.once(t * (1 / animationDurationSeconds), () => {
+
+    // The animation.once() function takes in values from 0 to 1 which represent the state of the
+    // animation. For example, 0 is the very beginning of the animation and 1 is the end of the
+    // animation. Decimal values inbetween 0 and 1 represent somewhere in the middle of the
+    // animation. The for loop below will register a function to be called when a given animation
+    // state has passed. If we have maxTime = 120 (which represents 120 minutes in our simulation),
+    // we will call the callback function 120 times. Once at each 1/120 increment.
+    for (let t = 0; t <= this.dataPointHandler.maxTime; t++) {
+      cupMaskAnimation.once(t * (1 / this.dataPointHandler.maxTime), () => {
         tickCallback();
       });
     }
+
     cupMaskAnimation.after(() => {
       this.animationHandler.setCompleted(this.label);
     });

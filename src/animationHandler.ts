@@ -95,20 +95,20 @@ export class AnimationHandler {
   }
 
   createLeftThermometer() {
-    return new Thermometer(this.draw, 140, 70, 'Left', 5, this.dataPointHandler);
+    return new Thermometer(this.draw, 'hot', 140, 70, 'Left', 5, this.dataPointHandler);
   }
 
   createRightThermometer() {
-    return new Thermometer(this.draw, 208, 70, 'Right', 155, this.dataPointHandler);
+    return new Thermometer(this.draw, 'cold', 208, 70, 'Right', 155, this.dataPointHandler);
   }
 
   /**
    * Create the temperature markings for the thermometers that looks like
-   * - 60°C -
-   * - 50°C -
-   * - 40°C -
-   * - 30°C -
-   * - 20°C -
+   * - 100°C -
+   * -  90°C -
+   * ...
+   * -  10°C -
+   * -   0°C -
    */
   createThermometerTemperatureMarks() {
     let text = '';

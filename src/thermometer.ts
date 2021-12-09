@@ -13,9 +13,11 @@ export class Thermometer extends Item {
   cupThermometerMaskRectStartingY: number;
   cupThermometerMaskRect: Rect;
   cupThermometerMask: Mask;
+  label: string;
 
   constructor(
     draw: any,
+    label: string,
     x: number,
     y: number,
     text: string,
@@ -32,6 +34,7 @@ export class Thermometer extends Item {
     this.cupThermometerText.move(cupThermometerTextX, cupThermometerTextY);
     this.cupThermometerText.font(this.getFontObject(14));
     this.dataPointHandler = dataPointHandler;
+    this.label = label;
 
     // the mercury
     const cupThermometerRedBarX = x + 8;
@@ -55,8 +58,9 @@ export class Thermometer extends Item {
   }
 
   startAnimation(animationDurationSeconds: number) {
+    const easingFunction = this.dataPointHandler.generateEasingFunction(this.label);
     this.animation = this.cupThermometerMaskRect
-      .animate(this.convertSecondsToMilliseconds(animationDurationSeconds), '>')
+      .animate(this.convertSecondsToMilliseconds(animationDurationSeconds), easingFunction)
       .move(this.cupThermometerMaskRectStartingX, 200);
     return this.animation;
   }

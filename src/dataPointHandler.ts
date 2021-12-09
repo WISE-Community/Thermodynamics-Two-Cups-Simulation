@@ -5,11 +5,14 @@ import { WISEAPI } from './wiseAPI';
  * The class that handles the temperature data points and sends them to WISE.
  */
 export class DataPointHandler {
-  // an array of temperature data points for the hot cup
-  hotCupTemperatures: any[];
+  // temperature limits in Celsius
+  coldCupStartTemperature = 5;
+  coldCupEndTemperature = 20;
+  hotCupStartTemperature = 100;
+  hotCupEndTemperature = 20;
 
-  // an array of temperature data points for the cold cup
-  coldCupTemperatures: any[];
+  // the max time in minutes
+  maxTime = 120;
 
   // the trial object that we will send to WISE
   trial: Trial;
@@ -20,48 +23,57 @@ export class DataPointHandler {
   constructor() {
     this.trial = new Trial();
     this.wiseAPI = new WISEAPI();
-    this.hotCupTemperatures = [
-      [0, 100],
-      [1, 90],
-      [2, 82],
-      [3, 74],
-      [4, 68],
-      [5, 60],
-      [6, 53],
-      [7, 46],
-      [8, 40],
-      [9, 35],
-      [10, 31],
-      [11, 27],
-      [12, 24],
-      [13, 22],
-      [14, 21],
-      [15, 20],
-    ];
-    this.coldCupTemperatures = [
-      [0, 5],
-      [1, 7],
-      [2, 10],
-      [3, 12],
-      [4, 14],
-      [5, 16],
-      [6, 18],
-      [7, 19],
-      [8, 19.5],
-      [9, 20],
-      [10, 20],
-      [11, 20],
-      [12, 20],
-      [13, 20],
-      [14, 20],
-      [15, 20],
-    ];
+  }
+
+  getHotCupTemperature(time: number): number {
+    const logisticYMax =
+      this.hotCupStartTemperature + (this.hotCupStartTemperature - this.hotCupEndTemperature) / 2;
+    return this.logisticFunction(this.hotCupEndTemperature, logisticYMax, -0.06, time);
+  }
+
+  getColdCupTemperature(time: number): number {
+    const logisticYMin =
+      this.coldCupStartTemperature - (this.coldCupEndTemperature - this.coldCupStartTemperature);
+    return this.logisticFunction(logisticYMin, this.coldCupEndTemperature, 0.1, time);
+  }
+
+  /**
+   * The logistic function looks like an S shape. We will only use the points on the right side of
+   * the function. Since we only want the right side of the function, the data points we will
+   * use will start from the middle of the S shape. This means in order to start our line at a
+   * specific y value, we need the midpoint between yMin and yMax to equal the y starting
+   * point that we want.
+   *
+   * For example for our hot cup, if we want our starting point to be y = 100 and our ending point
+   * to be y = 20, we actually need yMin to be 20 and yMax to be 180 in the logistic function.
+   * This is because the difference between 180 and 20 is 160. Half of 160 is 80. If we take 20 and
+   * add 80, we will get 100.
+   *
+   * For example for our cold cup, if we want our starting point to be y = 5 and our ending point to
+   * be y = 20, we need yMin to be -10 and yMax to be 20 in the logistic function.
+   * This is because the difference between 20 and -10 is 30. Half of 30 is 15. If we take -10 and
+   * add 15, we will get 5.
+   *
+   * https://en.wikipedia.org/wiki/Logistic_function
+   *
+   * @param yMin
+   * @param yMax
+   * @param curvature This determines which way the graph line will curve and how sharp it curves.
+   * If the value is positive, the line values will increase.
+   * If the value is negative, the line values will decrease.
+   * The smaller the absolute value, the flatter the line will be.
+   * The larger the absolute value, the sharper the line will be when it curves.
+   * @param x The time value
+   * @returns The temperature value
+   */
+  logisticFunction(yMin: number, yMax: number, curvature: number, x: number): number {
+    return yMin + (yMax - yMin) / (1 + Math.exp(-curvature * x));
   }
 
   /**
    * Initialize the trial by clearing out the data in it.
    */
-  initializeTrial() {
+  initializeTrial(): void {
     this.trial.initialize();
   }
 
@@ -71,8 +83,8 @@ export class DataPointHandler {
    * @return An array containing the time and temperature like
    * [time, temperature]
    */
-  getHotCupTemperatureDataPoint(time) {
-    return this.hotCupTemperatures[time];
+  getHotCupTemperatureDataPoint(time: number): number[] {
+    return [time, this.getHotCupTemperature(time)];
   }
 
   /**
@@ -81,108 +93,59 @@ export class DataPointHandler {
    * @return An array containing the time and temperature like
    * [time, temperature]
    */
-  getColdCupTemperatureDataPoint(time) {
-    return this.coldCupTemperatures[time];
-  }
-
-  /**
-   * Get the temperature of the hot cup at a specific time.
-   * @param time The time we want the temperature for. This will be an integer.
-   * @return A float value representing the temperature in Celsius like 31.8
-   */
-  getHotCupTemperature(time) {
-    return this.getDataPointY(this.hotCupTemperatures[time]);
-  }
-
-  /**
-   * Get the temperature of the cold cup at a specific time.
-   * @param time The time we want the temperature for. This will be an integer.
-   * @return A float value representing the temperature in Celsius like 29.3
-   */
-  getColdCupTemperature(time) {
-    return this.getDataPointY(this.coldCupTemperatures[time]);
-  }
-
-  /**
-   * Get the x value of the data point.
-   * @param dataPoint An array containing two values. The first being x, and the
-   * second being y like [x, y].
-   * @return The x value of the data point.
-   */
-  getDataPointX(dataPoint) {
-    return dataPoint[0];
-  }
-
-  /**
-   * Get the y value of the data point.
-   * @param dataPoint An array containing two values. The first being x, and the
-   * second being y like [x, y].
-   * @return the y value of the data point.
-   */
-  getDataPointY(dataPoint) {
-    return dataPoint[1];
+  getColdCupTemperatureDataPoint(time: number): number[] {
+    return [time, this.getColdCupTemperature(time)];
   }
 
   /**
    * Add the data points at the given time to the trial object.
    * @param time Add the data points at this specific time.
    */
-  addDataPointsToTrial(time) {
-    const hotCupTemperatureDataPoint = this.getHotCupTemperatureDataPoint(time);
-    const coldCupTemperatureDataPoint = this.getColdCupTemperatureDataPoint(time);
-    this.trial.addDataPointToHotCupSeries(
-      this.getDataPointX(hotCupTemperatureDataPoint),
-      this.getDataPointY(hotCupTemperatureDataPoint)
-    );
-    this.trial.addDataPointToColdCupSeries(
-      this.getDataPointX(coldCupTemperatureDataPoint),
-      this.getDataPointY(coldCupTemperatureDataPoint)
-    );
+  addDataPointsToTrial(time: number): void {
+    this.trial.addDataPointToHotCupSeries(time, this.getHotCupTemperature(time));
+    this.trial.addDataPointToColdCupSeries(time, this.getColdCupTemperature(time));
   }
 
   /**
    * Update the trial and send it to WISE.
    * @param time Add the temperatures for this time point.
    */
-  updateAndSendTrial(time) {
+  updateAndSendTrial(time: number): void {
     // update the trial to add the new temperature data points.
     this.addDataPointsToTrial(time);
     this.wiseAPI.save(this.trial.toJsonObject());
   }
 
-  /**
-   * Get the slope of the line that intersects the two points.
-   * @param x1 The x value of the first point.
-   * @param y1 The y value of the first point.
-   * @param x2 The x value of the second point.
-   * @param y2 The y value of the second point.
-   * @return The slope of the line.
-   */
-  getSlope(x1, y1, x2, y2) {
-    return (y2 - y1) / (x2 - x1);
+  generateEasingFunction(label: string): any {
+    if (label === 'hot') {
+      return this.generateHotThermometerEasingFunction();
+    } else if (label === 'cold') {
+      return this.generateColdThermometerEasingFunction();
+    } else {
+      return null;
+    }
   }
 
-  /**
-   * Calculate the y intercept of the line that intersects the two points.
-   * @param x1 The x value of the first point.
-   * @param y1 The y value of the first point.
-   * @param x2 The x value of the second point.
-   * @param y2 The y value of the second point.
-   * @return The y intercept of the line.
-   */
-  getYIntercept(x1, y1, x2, y2) {
-    let slope = this.getSlope(x1, y1, x2, y2);
-    return y1 - slope * x1;
+  generateHotThermometerEasingFunction(): any {
+    const thisDataPointHandler = this;
+    return (pos: number): number => {
+      return (
+        1 -
+        (thisDataPointHandler.getHotCupTemperature(pos * this.maxTime) -
+          this.hotCupEndTemperature) /
+          (this.hotCupStartTemperature - this.hotCupEndTemperature)
+      );
+    };
   }
 
-  /**
-   * Calculate the value of y given the equation of a line.
-   * @param m The slope of the line.
-   * @param x Calculate the y value for this given value of x.
-   * @param b The y intercept.
-   * @return The calculated y value.
-   */
-  calculateY(m, x, b) {
-    return m * x + b;
+  generateColdThermometerEasingFunction(): any {
+    const thisDataPointHandler = this;
+    return (pos: number): number => {
+      return (
+        (thisDataPointHandler.getColdCupTemperature(pos * this.maxTime) -
+          this.coldCupStartTemperature) /
+        (this.coldCupEndTemperature - this.coldCupStartTemperature)
+      );
+    };
   }
 }
