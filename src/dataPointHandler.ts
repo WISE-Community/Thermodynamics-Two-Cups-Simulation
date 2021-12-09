@@ -27,7 +27,7 @@ export class DataPointHandler {
 
   getHotCupTemperature(time: number): number {
     const logisticYMax =
-      this.hotCupStartTemperature + (this.hotCupStartTemperature - this.hotCupEndTemperature) / 2;
+      this.hotCupStartTemperature + (this.hotCupStartTemperature - this.hotCupEndTemperature);
     return this.logisticFunction(this.hotCupEndTemperature, logisticYMax, -0.06, time);
   }
 
