@@ -117,7 +117,7 @@ export class Cup extends Item {
   startCupHeatTransfer(animationDurationSeconds: number, tickCallback: any): any {
     const cupMaskAnimation: any = this.cupMaskRect
       .animate(this.convertSecondsToMilliseconds(animationDurationSeconds))
-      .move(this.cupMaskRectStartingX, 18);
+      .attr({ opacity: 0 });
     this.thermometer.startAnimation(animationDurationSeconds);
     for (let t = 0; t <= animationDurationSeconds; t++) {
       cupMaskAnimation.once(t * (1 / animationDurationSeconds), () => {
@@ -173,7 +173,7 @@ export class Cup extends Item {
   }
 
   resetCupHeatMask() {
-    this.cupMaskRect.move(this.cupMaskRectStartingX, this.cupMaskRectStartingY);
+    this.cupMaskRect.opacity(1);
     if (this.heatAnimation != null) {
       // setting paused to false prevents a bug that occurs sometimes when play is clicked but
       // the animation does not start playing
