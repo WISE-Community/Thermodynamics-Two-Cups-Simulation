@@ -29,7 +29,7 @@ export class Thermometer extends Item {
 
     // the text label above the Cup thermometer
     this.draw = draw;
-    let cupThermometerTextX = x - 16;
+    let cupThermometerTextX = x - 20;
     let cupThermometerTextY = y - 24;
     this.cupThermometerText = this.draw.text(text);
     this.cupThermometerText.move(cupThermometerTextX, cupThermometerTextY);

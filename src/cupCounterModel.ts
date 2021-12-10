@@ -127,7 +127,7 @@ export class CupCounterModel {
     if (top != null) {
       // position the model vertically from the top of the screen
       $('#modelDiv').css('top', top);
-      let buttonsTop = top + 20;
+      let buttonsTop = top + 10;
       $('#playPauseButton').css('top', buttonsTop);
       $('#resetButton').css('top', buttonsTop);
     }

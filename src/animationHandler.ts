@@ -129,9 +129,8 @@ export class AnimationHandler {
    */
   createDoneMessage() {
     this.doneText = this.draw.text('Done!');
-    this.doneText.move(136, 28);
+    this.doneText.move(136, 18);
     this.doneText.font(Util.getFontObject(16));
-    this.doneText.fill('royalblue');
     this.doneText.hide();
   }
 
