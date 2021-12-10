@@ -52,12 +52,12 @@ export class Cup extends Item {
     this.label = label;
 
     // create the text that displays the temperature on the cup
-    let cupTemperatureDisplayX = cupX + 8;
-    let cupTemperatureDisplayY = cupY + 10;
+    let cupTemperatureDisplayX = cupX + 4;
+    let cupTemperatureDisplayY = cupY - 20;
     this.cupTemperatureDisplay = this.draw
       .text(this.getCupTemperatureText(startTemp))
       .move(cupTemperatureDisplayX, cupTemperatureDisplayY);
-    this.cupTemperatureDisplay.font(this.getFontObject(16));
+    this.cupTemperatureDisplay.font(Util.getFontObject(16, '600'));
     this.cupTemperatureDisplay.style('white-space', 'pre');
 
     /*

@@ -10,6 +10,10 @@
         url(../images/iconfont/MaterialIcons-Regular.ttf) format('truetype');
 }
 
+body, tspan {
+  font-family: Arial;
+}
+
 .material-icons {
   font-family: 'Material Icons';
   font-weight: normal;
@@ -41,20 +45,24 @@
   left: 0px;
 }
 
+button {
+  border-radius: 4px;
+  background-color: transparent;
+  outline: none;
+}
+
+button:hover, button:focus {
+  background-color: #eeeeee;
+}
+
 #playPauseButton {
   position: absolute;
   top: 20px;
   left: 35px;
-  border-radius: 5px;
-  background-color: transparent;
-  outline: none;
 }
 
 #resetButton {
   position: absolute;
   top: 20px;
   left: 85px;
-  border-radius: 5px;
-  background-color: transparent;
-  outline: none;
 }

@@ -19,8 +19,8 @@ export class Util {
      * "?feedbackPolicy=experiment2b&showGraph=false"
      */
     let search = location.search;
-    if (search != null && search != '') {
-      if (search.indexOf('?') == 0) {
+    if (search != null && search != "") {
+      if (search.indexOf("?") == 0) {
         /*
          * remove the ?
          * e.g.
@@ -35,7 +35,7 @@ export class Util {
        * parameterPairs[0]="feedbackPolicy=experiment2b"
        * parameterPairs[1]="showGraph=false"
        */
-      let parameterPairs = search.split('&');
+      let parameterPairs = search.split("&");
       if (parameterPairs != null) {
         for (let parameterPairString of parameterPairs) {
           if (parameterPairString != null) {
@@ -45,16 +45,16 @@ export class Util {
              * parameterPair[0]="feedbackPolicy"
              * parameterPair[1]="experiment2b"
              */
-            let parameterPair = parameterPairString.split('=');
+            let parameterPair = parameterPairString.split("=");
             if (parameterPair != null) {
               let [parameterName, parameterValue] = parameterPair;
-              if (parameterValue == 'true') {
+              if (parameterValue == "true") {
                 /*
                  * the value is the string "true" so we will convert
                  * it from a string to a boolean value
                  */
                 parameters[parameterName] = Boolean(parameterValue);
-              } else if (parameterValue == 'false') {
+              } else if (parameterValue == "false") {
                 /*
                  * the value is the string "false" so we will convert
                  * it from a string to a boolean value
@@ -78,14 +78,18 @@ export class Util {
   }
 
   static getLeadingWhiteSpace(temperature: number): string {
-    let text = '';
+    let text = "";
     for (let space = 1; space <= 4 - this.getNumDigits(temperature); space++) {
-      text += ' ';
+      text += " ";
     }
     return text;
   }
 
   static getNumDigits(number: number): number {
-    return (Math.floor(number) + '').length;
+    return (Math.floor(number) + "").length;
+  }
+
+  static getFontObject(size: number, weight: string = "400") {
+    return { size: size, weight: weight };
   }
 }

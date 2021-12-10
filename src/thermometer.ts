@@ -1,6 +1,7 @@
 import { Image, Mask, Rect, Text } from 'svg.js';
 import { DataPointHandler } from './dataPointHandler';
 import { Item } from './item';
+import { Util } from './util';
 
 export class Thermometer extends Item {
   animation: any;
@@ -28,11 +29,11 @@ export class Thermometer extends Item {
 
     // the text label above the Cup thermometer
     this.draw = draw;
-    let cupThermometerTextX = x;
-    let cupThermometerTextY = y - 14;
+    let cupThermometerTextX = x - 16;
+    let cupThermometerTextY = y - 24;
     this.cupThermometerText = this.draw.text(text);
     this.cupThermometerText.move(cupThermometerTextX, cupThermometerTextY);
-    this.cupThermometerText.font(this.getFontObject(14));
+    this.cupThermometerText.font(Util.getFontObject(14, '600'));
     this.dataPointHandler = dataPointHandler;
     this.label = label;
 

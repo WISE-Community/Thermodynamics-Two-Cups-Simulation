@@ -95,11 +95,11 @@ export class AnimationHandler {
   }
 
   createLeftThermometer() {
-    return new Thermometer(this.draw, 'hot', 140, 70, 'Left', 5, this.dataPointHandler);
+    return new Thermometer(this.draw, 'hot', 140, 90, 'Left Cup', 5, this.dataPointHandler);
   }
 
   createRightThermometer() {
-    return new Thermometer(this.draw, 'cold', 208, 70, 'Right', 155, this.dataPointHandler);
+    return new Thermometer(this.draw, 'cold', 208, 90, 'Right Cup', 155, this.dataPointHandler);
   }
 
   /**
@@ -119,8 +119,8 @@ export class AnimationHandler {
     }
     this.temperatureLabels = this.draw.text(text);
     this.temperatureLabels.style('white-space', 'pre');
-    this.temperatureLabels.move(162, 70);
-    this.temperatureLabels.font(this.getFontObject(12));
+    this.temperatureLabels.move(160, 90);
+    this.temperatureLabels.font(Util.getFontObject(12));
   }
 
   /**
@@ -129,18 +129,10 @@ export class AnimationHandler {
    */
   createDoneMessage() {
     this.doneText = this.draw.text('Done!');
-    this.doneText.move(160, 25);
-    this.doneText.font(this.getFontObject(16));
+    this.doneText.move(136, 28);
+    this.doneText.font(Util.getFontObject(16));
+    this.doneText.fill('royalblue');
     this.doneText.hide();
-  }
-
-  /**
-   * Get an object that contains specifications for a font.
-   * @param size The font size.
-   * @return A object containing font attributes.
-   */
-  getFontObject(size) {
-    return { size: size, family: 'Times New Roman' };
   }
 
   /**
