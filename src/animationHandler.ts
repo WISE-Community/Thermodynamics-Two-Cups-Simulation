@@ -155,7 +155,7 @@ export class AnimationHandler {
       // animations.
       this.incrementTimeAndUpdateTemperatures();
     });
-    this.coldCup.startAnimation(1, 10, () => {});
+    this.coldCup.startAnimation(1, 15, () => {});
   }
 
   incrementTimeAndUpdateTemperatures() {
