@@ -33,7 +33,7 @@ export class AnimationHandler {
     this.time = 0;
     this.cupCounterModel = cupCounterModel;
     this.dataPointHandler = new DataPointHandler();
-    this.draw = SVG('modelDiv').size(400, 300);
+    this.draw = SVG('modelDiv').size(350, 300);
     this.initializeItems();
     this.createThermometerTemperatureMarks();
     this.createDoneMessage();
@@ -95,11 +95,11 @@ export class AnimationHandler {
   }
 
   createLeftThermometer() {
-    return new Thermometer(this.draw, 'hot', 140, 90, 'Left Cup', 5, this.dataPointHandler);
+    return new Thermometer(this.draw, 'hot', 140, 90, 'Hot Cup', 5, this.dataPointHandler);
   }
 
   createRightThermometer() {
-    return new Thermometer(this.draw, 'cold', 208, 90, 'Right Cup', 155, this.dataPointHandler);
+    return new Thermometer(this.draw, 'cold', 208, 90, 'Cold Cup', 155, this.dataPointHandler);
   }
 
   /**

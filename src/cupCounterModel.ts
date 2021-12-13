@@ -134,8 +134,8 @@ export class CupCounterModel {
     if (left != null) {
       // position the model horizontally from the left of the screen
       $('#modelDiv').css('left', left);
-      let playPauseButtonLeft = left + 35;
-      let resetButtonLeft = left + 85;
+      let playPauseButtonLeft = left;
+      let resetButtonLeft = left + 50;
       $('#playPauseButton').css('left', playPauseButtonLeft);
       $('#resetButton').css('left', resetButtonLeft);
     }

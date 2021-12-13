@@ -31,8 +31,8 @@ export class Trial {
     this.trial.id = this.id;
     this.trial.name = 'Hot Cup and Cold Cup Temperatures';
     this.trial.series = [];
-    this.trial.series.push(this.createSeries('Left Cup (hot liquid)', 'red', 'circle'));
-    this.trial.series.push(this.createSeries("Right Cup (cold liquid)", "cornflowerblue", "square"));
+    this.trial.series.push(this.createSeries('Hot Cup', 'red', 'circle'));
+    this.trial.series.push(this.createSeries('Cold Cup', 'cornflowerblue', 'square'));
   }
 
   /**

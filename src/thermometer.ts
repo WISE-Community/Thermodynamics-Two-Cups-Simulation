@@ -62,7 +62,7 @@ export class Thermometer extends Item {
     const easingFunction = this.dataPointHandler.generateEasingFunction(this.label);
     this.animation = this.cupThermometerMaskRect
       .animate(this.convertSecondsToMilliseconds(animationDurationSeconds), easingFunction)
-      .move(this.cupThermometerMaskRectStartingX, 200);
+      .move(this.cupThermometerMaskRectStartingX, 221);
     return this.animation;
   }
 
